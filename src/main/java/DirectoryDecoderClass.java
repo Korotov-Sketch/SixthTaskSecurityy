@@ -9,32 +9,29 @@ import java.util.Scanner;
 public class DirectoryDecoderClass {
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
-        System.out.print("Введите ключевое слово (на английском, чувствительно к регистру): ");
-        String key = in.nextLine();
 
-        System.out.print("Введите путь к каталогу для расшифрования: ");
+        //src/main/resources/EncryptedDirectory.txt
+        System.out.print("Enter path to file \n(Example: src/main/resources/EncryptedDirectory.txt )\nHere: ");
         File rootDir = new File(in.nextLine());
 
-        char[] alphabet = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G',
-                'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-                'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c',
-                'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
-                'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                '!', '@', '\"', '#', '№', ';', '$', '%', ':', '^', '&',
-                '?', '*', '(', ')', '-', '_', '+', '=', '[', '{', ']',
-                '}', '\\', '|', '/', '\'', ',', '<', '.', '>'};
-        Arrays.sort(alphabet);
+        System.out.print("Enter Key word \n(Example: Mother)\nHere: ");
+        String key = in.nextLine();
+        char[] LatinosAlph = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k','l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+                'v', 'w', 'x', 'y', 'z',
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                '!', '@', '\"', '#', '№', ';', '$', '%', ':', '^', '&', '?', '*', '(', ')', '-', '_', '+', '=', '[',
+                '{', ']', '}', '\\', '|', '/', '\'', ',', '<', '.', '>'};
+        Arrays.sort(LatinosAlph);
 
-        char[][] matrix = new char[alphabet.length][alphabet.length];
-        for (int i = 0, k; i < matrix.length; i++) {
+        char[][] DoubleLatinosMatrix = new char[LatinosAlph.length][LatinosAlph.length];
+        for (int i = 0, k; i < DoubleLatinosMatrix.length; i++) {
             k = i;
-            for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j] = alphabet[k];
+            for (int j = 0; j < DoubleLatinosMatrix[i].length; j++) {
+                DoubleLatinosMatrix[i][j] = LatinosAlph[k];
                 k++;
-                if (k == alphabet.length) {
-                    k = 0;
-                }
+                if (k == LatinosAlph.length) {k = 0;}
             }
         }
 
@@ -44,97 +41,95 @@ public class DirectoryDecoderClass {
         BufferedReader bufferedReader = new BufferedReader(reader);
 
         StringBuilder text = new StringBuilder();
-        String line = bufferedReader.readLine();
-        text.append(line);
-        while (line != null) {
-            line = bufferedReader.readLine();
-            if (line != null) {
-                text.append("\n" + line);
-            }
+        String LoneleyReader = bufferedReader.readLine();
+        text.append(LoneleyReader);
+        while (LoneleyReader != null) {
+            LoneleyReader = bufferedReader.readLine();
+            if (LoneleyReader != null) {text.append("\n" + LoneleyReader);}
         }
         bufferedReader.close();
         reader.close();
         List<String> encryptedDirectory = Arrays.asList(text.toString().split(delimiter));
 
-        String path = encryptedDirectory.get(0);
-        String preparedKey = key.repeat(path.length() / key.length() + 1)
-                .substring(0, path.length());
-        StringBuilder decodedPath = new StringBuilder();
-        for(int i = 0; i < path.length(); i++) {
+        String EDirectoryPath = encryptedDirectory.get(0);
+        String preparedKey = key.repeat(EDirectoryPath.length() / key.length() + 1)
+                .substring(0, EDirectoryPath.length());
+        StringBuilder DirectoryFinalDecodedPath = new StringBuilder();
+        for(int i = 0; i < EDirectoryPath.length(); i++) {
             int index = 0;
-            char[] lineInMatrix = matrix[Arrays.binarySearch(alphabet, preparedKey.charAt(i))];
+            char[] lineInMatrix = DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph, preparedKey.charAt(i))];
             for (int j = 0; j < lineInMatrix.length; j++) {
-                if(lineInMatrix[j] == path.charAt(i)) {
+                if(lineInMatrix[j] == EDirectoryPath.charAt(i)) {
                     index = j;
                     break;
                 }
             }
-            decodedPath.append(matrix[0][index]);
+            DirectoryFinalDecodedPath.append(DoubleLatinosMatrix[0][index]);
         }
 
-        File root = new File(decodedPath.toString());
+        File root = new File(DirectoryFinalDecodedPath.toString());
         root.mkdir();
 
         for(int i = 1; i < encryptedDirectory.size(); i++) {
-            String curFile = encryptedDirectory.get(i);
-            int flag = Integer.parseInt(curFile.substring(0, 1));
-            curFile = curFile.substring(1);
-            decodedPath.delete(0, decodedPath.length());
+            String CurrientFile = encryptedDirectory.get(i);
+            int FlagVar = Integer.parseInt(CurrientFile.substring(0, 1));
+            CurrientFile = CurrientFile.substring(1);
+            DirectoryFinalDecodedPath.delete(0, DirectoryFinalDecodedPath.length());
 
-            if (flag == 0) {
-                preparedKey = key.repeat(curFile.length() / key.length() + 1)
-                        .substring(0, curFile.length());
-                for(int j = 0; j < curFile.length(); j++) {
+            if (FlagVar == 0) {
+                preparedKey = key.repeat(CurrientFile.length() / key.length() + 1)
+                        .substring(0, CurrientFile.length());
+                for(int j = 0; j < CurrientFile.length(); j++) {
                     int index = 0;
-                    char[] lineInMatrix = matrix[Arrays.binarySearch(alphabet, preparedKey.charAt(j))];
+                    char[] lineInMatrix = DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph, preparedKey.charAt(j))];
                     for (int k = 0; k < lineInMatrix.length; k++) {
-                        if(lineInMatrix[k] == curFile.charAt(j)) {
+                        if(lineInMatrix[k] == CurrientFile.charAt(j)) {
                             index = k;
                             break;
                         }
                     }
-                    decodedPath.append(matrix[0][index]);
+                    DirectoryFinalDecodedPath.append(DoubleLatinosMatrix[0][index]);
                 }
-                File file = new File(decodedPath.toString());
+                File file = new File(DirectoryFinalDecodedPath.toString());
                 file.mkdir();
             }
             else {
-                String[] pathAndBytes = curFile.split(secondDelimiter);
-                path = pathAndBytes[0];
-                preparedKey = key.repeat(path.length() / key.length() + 1)
-                        .substring(0, path.length());
-                for(int j = 0; j < path.length(); j++) {
+                String[] BytesOfPath = CurrientFile.split(secondDelimiter);
+                EDirectoryPath = BytesOfPath[0];
+                preparedKey = key.repeat(EDirectoryPath.length() / key.length() + 1)
+                        .substring(0, EDirectoryPath.length());
+                for(int j = 0; j < EDirectoryPath.length(); j++) {
                     int index = 0;
-                    char[] lineInMatrix = matrix[Arrays.binarySearch(alphabet, preparedKey.charAt(j))];
+                    char[] lineInMatrix = DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph, preparedKey.charAt(j))];
                     for (int k = 0; k < lineInMatrix.length; k++) {
-                        if(lineInMatrix[k] == path.charAt(j)) {
+                        if(lineInMatrix[k] == EDirectoryPath.charAt(j)) {
                             index = k;
                             break;
                         }
                     }
-                    decodedPath.append(matrix[0][index]);
+                    DirectoryFinalDecodedPath.append(DoubleLatinosMatrix[0][index]);
                 }
-                File file = new File(decodedPath.toString());
+                File file = new File(DirectoryFinalDecodedPath.toString());
                 file.createNewFile();
 
-                String bytes = pathAndBytes[1];
-                StringBuilder decodedBytes = new StringBuilder();
-                preparedKey = key.repeat(bytes.length() / key.length() + 1)
-                        .substring(0, bytes.length());
-                for(int j = 0; j < bytes.length(); j++) {
+                String BytesVar = BytesOfPath[1];
+                StringBuilder DecodedBytes = new StringBuilder();
+                preparedKey = key.repeat(BytesVar.length() / key.length() + 1)
+                        .substring(0, BytesVar.length());
+                for(int j = 0; j < BytesVar.length(); j++) {
                     int index = 0;
-                    char[] lineInMatrix = matrix[Arrays.binarySearch(alphabet, preparedKey.charAt(j))];
+                    char[] lineInMatrix = DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph, preparedKey.charAt(j))];
                     for (int k = 0; k < lineInMatrix.length; k++) {
-                        if(lineInMatrix[k] == bytes.charAt(j)) {
+                        if(lineInMatrix[k] == BytesVar.charAt(j)) {
                             index = k;
                             break;
                         }
                     }
-                    decodedBytes.append(matrix[0][index]);
+                    DecodedBytes.append(DoubleLatinosMatrix[0][index]);
                 }
 
                 FileWriter writer = new FileWriter(file);
-                String message = decodedBytes.toString();
+                String message = DecodedBytes.toString();
                 writer.write(message);
                 writer.close();
             }

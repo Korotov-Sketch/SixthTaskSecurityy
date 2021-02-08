@@ -10,79 +10,80 @@ public class DirectoryEncryptiorClass {
         String delimiter = "`";
         String secondDelimiter = "\n";
         Scanner in = new Scanner(System.in);
-        System.out.print("Введите ключевое слово (на английском, чувствительно к регистру): ");
-        String key = in.nextLine();
 
-        System.out.print("Введите путь к каталогу для шифрования: ");
-        String path = in.nextLine();
-        File rootDir = new File(path);
+        System.out.print("Enter the path to the folder \n(Example: D:\\TestForSecurity ) \nHere: ");
+        String filePath = in.nextLine();
+        File rootDir = new File(filePath);
 
-        char[] alphabet = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G',
-                'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-                'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c',
-                'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
-                'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                '!', '@', '\"', '#', '№', ';', '$', '%', ':', '^', '&',
-                '?', '*', '(', ')', '-', '_', '+', '=', '[', '{', ']',
-                '}', '\\', '|', '/', '\'', ',', '<', '.', '>'};
-        Arrays.sort(alphabet);
+        System.out.print("Enter Key word \n(Example: Mother) \nHere: ");
+        String keyWord = in.nextLine();
 
-        char[][] matrix = new char[alphabet.length][alphabet.length];
-        for (int i = 0, k; i < matrix.length; i++) {
+        //D:\TestForSecurity
+
+        char[] LatinosAlph = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+                'v', 'w', 'x', 'y', 'z',
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                '!', '@', '\"', '#', '№', ';', '$', '%', ':', '^', '&', '?', '*', '(', ')', '-', '_', '+', '=', '[',
+                '{', ']', '}', '\\', '|', '/', '\'', ',', '<', '.', '>'};
+        Arrays.sort(LatinosAlph);
+
+        char[][] DoubleLatinosMatrix = new char[LatinosAlph.length][LatinosAlph.length];
+        for (int i = 0, k; i < DoubleLatinosMatrix.length; i++) {
             k = i;
-            for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j] = alphabet[k];
+            for (int j = 0; j < DoubleLatinosMatrix[i].length; j++) {
+                DoubleLatinosMatrix[i][j] = LatinosAlph[k];
                 k++;
-                if (k == alphabet.length) {
+                if (k == LatinosAlph.length) {
                     k = 0;
                 }
             }
         }
 
-        List<String> result = new ArrayList<>();
-        Queue<File> fileTree = new PriorityQueue<>();
+        List<String> EndList = new ArrayList<>();
+        Queue<File> filesTree = new PriorityQueue<>();
 
-        String preparedKey = key.repeat(path.length() / key.length() + 1)
-                .substring(0, path.length());
+        String preparedKey = keyWord.repeat(filePath.length() / keyWord.length() + 1)
+                .substring(0, filePath.length());
 
         StringBuilder encodedFile = new StringBuilder();
-        for (int i = 0; i < path.length(); i++) {
-            encodedFile.append(matrix[Arrays.binarySearch(alphabet,
-                    preparedKey.charAt(i))][Arrays.binarySearch(alphabet, path.charAt(i))]);
+        for (int i = 0; i < filePath.length(); i++) {
+            encodedFile.append(DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph,
+                    preparedKey.charAt(i))][Arrays.binarySearch(LatinosAlph, filePath.charAt(i))]);
         }
-        result.add(encodedFile.toString());
+        EndList.add(encodedFile.toString());
 
-        Collections.addAll(fileTree, rootDir.listFiles());
-        while (!fileTree.isEmpty()) {
-            File curFile = fileTree.remove();
-            String pathCurFile = curFile.getPath();
+        Collections.addAll(filesTree, rootDir.listFiles());
+        while (!filesTree.isEmpty()) {
+            File currientFileOrDir = filesTree.remove();
+            String pathCurFile = currientFileOrDir.getPath();
             encodedFile.delete(0, encodedFile.length());
 
-            preparedKey = key.repeat(pathCurFile.length() / key.length() + 1)
+            preparedKey = keyWord.repeat(pathCurFile.length() / keyWord.length() + 1)
                     .substring(0, pathCurFile.length());
             for(int i = 0; i < pathCurFile.length(); i++) {
-                encodedFile.append(matrix[Arrays.binarySearch(alphabet,
-                        preparedKey.charAt(i))][Arrays.binarySearch(alphabet, pathCurFile.charAt(i))]);
+                encodedFile.append(DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph,
+                        preparedKey.charAt(i))][Arrays.binarySearch(LatinosAlph, pathCurFile.charAt(i))]);
             }
-            if (curFile.isDirectory()) {
-                Collections.addAll(fileTree, curFile.listFiles());
+            if (currientFileOrDir.isDirectory()) {
+                Collections.addAll(filesTree, currientFileOrDir.listFiles());
 
-                result.add("0" + encodedFile.toString());
+                EndList.add("0" + encodedFile.toString());
             }
             else
             {
-                String pathString = encodedFile.toString();
+                String PathWord = encodedFile.toString();
 
                 String curFileString = Files.readString(Path.of(pathCurFile));
-                preparedKey = key.repeat(curFileString.length() / key.length() + 1)
+                preparedKey = keyWord.repeat(curFileString.length() / keyWord.length() + 1)
                         .substring(0, curFileString.length());
                 encodedFile.delete(0, encodedFile.length());
                 for(int i = 0; i < curFileString.length(); i++) {
-                    encodedFile.append(matrix[Arrays.binarySearch(alphabet,
-                            preparedKey.charAt(i))][Arrays.binarySearch(alphabet, curFileString.charAt(i))]);
+                    encodedFile.append(DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph,
+                            preparedKey.charAt(i))][Arrays.binarySearch(LatinosAlph, curFileString.charAt(i))]);
                 }
-                result.add("1" + pathString + secondDelimiter + encodedFile.toString());
+                EndList.add("1" + PathWord + secondDelimiter + encodedFile.toString());
             }
         }
 
@@ -91,8 +92,8 @@ public class DirectoryEncryptiorClass {
         FileWriter fileWriter = new FileWriter(file);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-        for(int i = 0; i < result.size(); i++) {
-            bufferedWriter.write(result.get(i) + delimiter);
+        for(int i = 0; i < EndList.size(); i++) {
+            bufferedWriter.write(EndList.get(i) + delimiter);
         }
         bufferedWriter.close();
         fileWriter.close();
