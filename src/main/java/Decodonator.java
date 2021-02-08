@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class DirectoryDecoderClass {
+public class Decodonator {
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
 

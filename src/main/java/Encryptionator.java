@@ -5,10 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class DirectoryEncryptiorClass {
+public class Encryptionator {
     public static void main(String[] args) throws Exception {
-        String delimiter = "`";
-        String secondDelimiter = "\n";
+        String QuotationMarkInStringVar = "`";
+        String EndLineInStringVar = "\n";
         Scanner in = new Scanner(System.in);
 
         System.out.print("Enter the path to the folder \n(Example: D:\\TestForSecurity ) \nHere: ");
@@ -35,9 +35,7 @@ public class DirectoryEncryptiorClass {
             for (int j = 0; j < DoubleLatinosMatrix[i].length; j++) {
                 DoubleLatinosMatrix[i][j] = LatinosAlph[k];
                 k++;
-                if (k == LatinosAlph.length) {
-                    k = 0;
-                }
+                if (k == LatinosAlph.length) {k = 0;}
             }
         }
 
@@ -83,7 +81,7 @@ public class DirectoryEncryptiorClass {
                     encodedFile.append(DoubleLatinosMatrix[Arrays.binarySearch(LatinosAlph,
                             preparedKey.charAt(i))][Arrays.binarySearch(LatinosAlph, curFileString.charAt(i))]);
                 }
-                EndList.add("1" + PathWord + secondDelimiter + encodedFile.toString());
+                EndList.add("1" + PathWord + EndLineInStringVar + encodedFile.toString());
             }
         }
 
@@ -93,7 +91,7 @@ public class DirectoryEncryptiorClass {
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         for(int i = 0; i < EndList.size(); i++) {
-            bufferedWriter.write(EndList.get(i) + delimiter);
+            bufferedWriter.write(EndList.get(i) + QuotationMarkInStringVar);
         }
         bufferedWriter.close();
         fileWriter.close();
