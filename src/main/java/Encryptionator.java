@@ -13,9 +13,9 @@ public class Encryptionator {
 
         System.out.print("Enter the path to the folder \n(Example: D:\\TestForSecurity ) \nHere: ");
         String filePath = in.nextLine();
-        File rootDir = new File(filePath);
+        File rootDirectory = new File(filePath);
 
-        System.out.print("Enter Key word \n(Example: Mother) \nHere: ");
+        System.out.print("Create Key word \n(Example: Mother) \nHere: ");
         String keyWord = in.nextLine();
 
         //D:\TestForSecurity
@@ -52,7 +52,7 @@ public class Encryptionator {
         }
         EndList.add(encodedFile.toString());
 
-        Collections.addAll(filesTree, rootDir.listFiles());
+        Collections.addAll(filesTree, rootDirectory.listFiles());
         while (!filesTree.isEmpty()) {
             File currientFileOrDir = filesTree.remove();
             String pathCurFile = currientFileOrDir.getPath();
@@ -96,7 +96,7 @@ public class Encryptionator {
         bufferedWriter.close();
         fileWriter.close();
 
-        Files.walk(rootDir.toPath())
+        Files.walk(rootDirectory.toPath())
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
